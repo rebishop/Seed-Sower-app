@@ -28,7 +28,7 @@ with col2:
     net_new_aum = st.number_input("Net New AUM ($)", min_value=0.0, step=1000.0)
 
 with col3:
-    word_minutes = st.number_input("Time in the Word (minutes)", min_value=0, step=1)
+    time_in_word_minutes = st.number_input("Time in the Word (minutes)", min_value=0, step=1)
 
 if st.button("Save Daily Entry"):
     payload = {
@@ -38,7 +38,7 @@ if st.button("Save Daily Entry"):
         "meetings_set": int(meetings_set),
         "meetings_ran": int(meetings_ran),
         "net_new_aum": float(net_new_aum),
-        "word_minutes": int(word_minutes),
+        "time_in_word_minutes": int(time_in_word_minutes),
     }
 
     supabase.table("daily_metrics").upsert(payload).execute()
@@ -72,14 +72,14 @@ if user_name:
         total_set = int(df["meetings_set"].sum())
         total_ran = int(df["meetings_ran"].sum())
         total_aum = float(df["net_new_aum"].sum())
-        total_word = int(df["word_minutes"].sum())
+        total_word = int(df["time_in_word_minutes"].sum())
 
         c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Seeds", total_seeds)
         c2.metric("Meetings Set", total_set)
         c3.metric("Meetings Ran", total_ran)
         c4.metric("Net New AUM", f"${total_aum:,.0f}")
-        c5.metric("Word Minutes", total_word)
+        c5.metric("Time_In_Word_Minutes", total_word)
 
         st.divider()
         st.subheader("Reports")
@@ -101,7 +101,7 @@ if user_name:
             total_set = int(filtered["meetings_set"].sum())
             total_ran = int(filtered["meetings_ran"].sum())
             total_aum = float(filtered["net_new_aum"].sum())
-            total_word = int(filtered["word_minutes"].sum())
+            total_word = int(filtered["time_in_word_minutes"].sum())
 
             close_rate = (total_ran / total_set * 100) if total_set > 0 else 0
             avg_seeds_per_day = total_seeds / num_days if num_days > 0 else 0
@@ -121,7 +121,7 @@ if user_name:
                 "Meetings Ran": total_ran,
                 "Meeting Run Rate %": round(close_rate, 1),
                 "Net New AUM": round(total_aum, 2),
-                "Word Minutes": total_word
+                "Time_In_Word_Minutes": total_word
             }])
 
             st.subheader("Report Summary")
