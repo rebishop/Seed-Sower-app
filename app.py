@@ -24,7 +24,7 @@ st.markdown("""
     left: 50%;
     transform: translate(-50%, -50%) rotate(0deg);
     font-size: 20px;
-    color: rgba(120, 100, 80, 0.08);
+    color: rgba(255, 255, 255);
     text-align: center;
     width: 90%;
     z-index: 0;
