@@ -4,7 +4,7 @@ from supabase import create_client
 from datetime import date
 
 # ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Seed Sower Tracker", layout="wide")
+st.set_page_config(page_title="Sowing & Watering", layout="wide")
 
 # ---------- STYLING ----------
 st.markdown("""
