@@ -22,7 +22,7 @@ st.markdown("""
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(-12deg);
+    transform: translate(-50%, -50%) rotate(0deg);
     font-size: 60px;
     color: rgba(120, 100, 80, 0.08);
     text-align: center;
@@ -102,7 +102,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ---------- HEADER ----------
 st.markdown("""
 <div class="hero-box">
-    <h1 style="margin-bottom:0.3rem;">Seed Sower Tracker</h1>
+    <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
     <p style="margin-top:0; color:#6b5c4d;">
         Daily faithfulness. Daily discipline. Daily stewardship.
     </p>
