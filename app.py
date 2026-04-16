@@ -68,7 +68,7 @@ h1, h2, h3 {
 /* Buttons */
 .stButton button {
     background-color: #7f8c6b;
-    color: Black;
+    color: White;
     border-radius: 10px;
     font-weight: 600;
     border: none;
