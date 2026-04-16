@@ -20,11 +20,11 @@ st.markdown("""
 .stApp::before {
     content: "“I have planted, Apollos watered; but God gave the increase.”";
     position: fixed;
-    top: 99%;
+    top: 95%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(0deg);
     font-size: 20px;
-    color: rgba(120, 100, 60, 0.08);
+    color: rgba(120, 100, 80, 0.08);
     text-align: center;
     width: 90%;
     z-index: 0;
