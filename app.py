@@ -3,24 +3,122 @@ import pandas as pd
 from supabase import create_client
 from datetime import date
 
+# ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Seed Sower Tracker", layout="wide")
 
+# ---------- STYLING ----------
+st.markdown("""
+<style>
+
+/* App background */
+.stApp {
+    background: linear-gradient(180deg, #f6f2e9 0%, #e9dfcf 100%);
+    color: #2f2a24;
+}
+
+/* Faded Bible verse background */
+.stApp::before {
+    content: "“I have planted, Apollos watered; but God gave the increase.”";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    font-size: 60px;
+    color: rgba(120, 100, 80, 0.08);
+    text-align: center;
+    width: 90%;
+    z-index: 0;
+    pointer-events: none;
+    font-family: Georgia, serif;
+}
+
+/* Keep content above background */
+.block-container {
+    position: relative;
+    z-index: 1;
+    padding-top: 2rem;
+    max-width: 1100px;
+}
+
+/* Headers */
+h1, h2, h3 {
+    font-family: Georgia, serif;
+    color: #3e3428;
+}
+
+/* Hero box */
+.hero-box {
+    background: rgba(255,255,255,0.65);
+    border-radius: 18px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(120, 100, 80, 0.15);
+    box-shadow: 0 4px 20px rgba(60,40,20,0.06);
+}
+
+/* Inputs */
+.stTextInput input,
+.stDateInput input,
+.stNumberInput input {
+    background-color: #fcfaf6;
+    border: 1px solid #cdbfae;
+    border-radius: 10px;
+}
+
+/* Buttons */
+.stButton button {
+    background-color: #7f8c6b;
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+}
+
+.stButton button:hover {
+    background-color: #6e7b5c;
+}
+
+/* Tables */
+[data-testid="stDataFrame"] {
+    border-radius: 12px;
+}
+
+/* Metrics */
+[data-testid="stMetric"] {
+    background: rgba(255,255,255,0.6);
+    padding: 10px;
+    border-radius: 12px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ---------- SUPABASE ----------
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-st.title("Seed Sower Tracker")
+# ---------- HEADER ----------
+st.markdown("""
+<div class="hero-box">
+    <h1 style="margin-bottom:0.3rem;">Seed Sower Tracker</h1>
+    <p style="margin-top:0; color:#6b5c4d;">
+        Daily faithfulness. Daily discipline. Daily stewardship.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# ---------- INPUT SECTION ----------
+st.markdown("### Daily Entry")
 
 user_name = st.text_input("Your name")
 entry_date = st.date_input("Date")
 
-st.subheader("Daily Inputs")
-
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    seeds_sown = st.number_input("Seeds Sown", min_value=0, max_value=17, step=1)
+    seeds_sown = st.number_input("Seeds Sown (out of 17)", min_value=0, max_value=17, step=1)
     meetings_set = st.number_input("Meetings Set", min_value=0, step=1)
 
 with col2:
@@ -28,8 +126,9 @@ with col2:
     net_new_aum = st.number_input("Net New AUM ($)", min_value=0.0, step=1000.0)
 
 with col3:
-    time_in_word_minutes = st.number_input("Time in the Word (minutes)", min_value=0, step=1)
+    Time_In_Word_Minutes = st.number_input("Time in the Word (minutes)", min_value=0, step=1)
 
+# ---------- SAVE ----------
 if st.button("Save Daily Entry"):
     payload = {
         "user_name": user_name,
@@ -38,7 +137,7 @@ if st.button("Save Daily Entry"):
         "meetings_set": int(meetings_set),
         "meetings_ran": int(meetings_ran),
         "net_new_aum": float(net_new_aum),
-        "time_in_word_minutes": int(time_in_word_minutes),
+        "Time_In_Word_Minutes": int(Time_In_Word_Minutes),
     }
 
     supabase.table("daily_metrics").upsert(payload).execute()
@@ -46,6 +145,7 @@ if st.button("Save Daily Entry"):
 
 st.divider()
 
+# ---------- DATA DISPLAY ----------
 if user_name:
     result = (
         supabase.table("daily_metrics")
@@ -62,33 +162,34 @@ if user_name:
         df = pd.DataFrame(data)
         df["entry_date"] = pd.to_datetime(df["entry_date"])
 
-        st.subheader("Recent Entries")
-        st.dataframe(
-            df.sort_values("entry_date", ascending=False),
-            use_container_width=True
-        )
+        st.markdown("### Recent Entries")
+        st.dataframe(df.sort_values("entry_date", ascending=False), use_container_width=True)
 
+        # Totals
         total_seeds = int(df["seeds_sown"].sum())
         total_set = int(df["meetings_set"].sum())
         total_ran = int(df["meetings_ran"].sum())
         total_aum = float(df["net_new_aum"].sum())
-        total_word = int(df["time_in_word_minutes"].sum())
+        total_word = int(df["Time_In_Word_Minutes"].sum()) if "Time_In_Word_Minutes" in df.columns else 0
 
         c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Seeds", total_seeds)
         c2.metric("Meetings Set", total_set)
         c3.metric("Meetings Ran", total_ran)
         c4.metric("Net New AUM", f"${total_aum:,.0f}")
-        c5.metric("Time_In_Word_Minutes", total_word)
+        c5.metric("Word Minutes", total_word)
 
         st.divider()
-        st.subheader("Reports")
+
+        # ---------- REPORTS ----------
+        st.markdown("### Reports")
 
         r1, r2 = st.columns(2)
+
         with r1:
-            report_start = st.date_input("Report Start Date", value=df["entry_date"].min().date(), key="report_start")
+            report_start = st.date_input("Start Date", value=df["entry_date"].min().date())
         with r2:
-            report_end = st.date_input("Report End Date", value=df["entry_date"].max().date(), key="report_end")
+            report_end = st.date_input("End Date", value=df["entry_date"].max().date())
 
         filtered = df[
             (df["entry_date"].dt.date >= report_start) &
@@ -96,53 +197,39 @@ if user_name:
         ].copy()
 
         if not filtered.empty:
-            num_days = filtered["entry_date"].nunique()
-            total_seeds = int(filtered["seeds_sown"].sum())
-            total_set = int(filtered["meetings_set"].sum())
-            total_ran = int(filtered["meetings_ran"].sum())
-            total_aum = float(filtered["net_new_aum"].sum())
-            total_word = int(filtered["time_in_word_minutes"].sum())
+            days = filtered["entry_date"].nunique()
+            seeds = int(filtered["seeds_sown"].sum())
+            set_meetings = int(filtered["meetings_set"].sum())
+            ran_meetings = int(filtered["meetings_ran"].sum())
+            aum = float(filtered["net_new_aum"].sum())
+            word = int(filtered["Time_In_Word_Minutes"].sum()) if "Time_In_Word_Minutes" in filtered.columns else 0
 
-            close_rate = (total_ran / total_set * 100) if total_set > 0 else 0
-            avg_seeds_per_day = total_seeds / num_days if num_days > 0 else 0
+            close_rate = (ran_meetings / set_meetings * 100) if set_meetings > 0 else 0
+            avg_seeds = seeds / days if days > 0 else 0
 
             s1, s2, s3 = st.columns(3)
-            s1.metric("Days Reported", num_days)
-            s2.metric("Avg Seeds / Day", f"{avg_seeds_per_day:.2f}")
-            s3.metric("Meeting Run Rate", f"{close_rate:.1f}%")
+            s1.metric("Days", days)
+            s2.metric("Avg Seeds/Day", f"{avg_seeds:.2f}")
+            s3.metric("Close Rate", f"{close_rate:.1f}%")
 
             summary_df = pd.DataFrame([{
                 "User": user_name,
-                "Start Date": report_start,
-                "End Date": report_end,
-                "Days Reported": num_days,
-                "Seeds Sown": total_seeds,
-                "Meetings Set": total_set,
-                "Meetings Ran": total_ran,
-                "Meeting Run Rate %": round(close_rate, 1),
-                "Net New AUM": round(total_aum, 2),
-                "Time_In_Word_Minutes": total_word
+                "Days": days,
+                "Seeds": seeds,
+                "Meetings Set": set_meetings,
+                "Meetings Ran": ran_meetings,
+                "Close Rate %": round(close_rate, 1),
+                "Net New AUM": round(aum, 2),
+                "Time_In_Word_Minutes": word
             }])
 
-            st.subheader("Report Summary")
             st.dataframe(summary_df, use_container_width=True)
 
-            csv = filtered.sort_values("entry_date").to_csv(index=False).encode("utf-8")
-            st.download_button(
-                "Download Detailed Report CSV",
-                data=csv,
-                file_name=f"{user_name}_report_{report_start}_to_{report_end}.csv",
-                mime="text/csv"
-            )
+            csv = filtered.to_csv(index=False).encode("utf-8")
+            st.download_button("Download Detailed CSV", csv, "report.csv", "text/csv")
 
-            summary_csv = summary_df.to_csv(index=False).encode("utf-8")
-            st.download_button(
-                "Download Summary CSV",
-                data=summary_csv,
-                file_name=f"{user_name}_summary_{report_start}_to_{report_end}.csv",
-                mime="text/csv"
-            )
         else:
-            st.info("No data in that date range.")
+            st.info("No data in selected range.")
+
     else:
-        st.info("No entries yet for this user.")
+        st.info("No entries yet.")
