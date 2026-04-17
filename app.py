@@ -4,7 +4,7 @@ import pandas as pd
 from supabase import create_client
 
 # ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Soowing and Watering", layout="wide")
+st.set_page_config(page_title="Sowing and Watering", layout="wide")
 
 # ---------- STYLING ----------
 st.markdown("""
@@ -150,7 +150,10 @@ if "selected_user" not in st.session_state:
 # ---------- HEADER ----------
 st.markdown("""
 <div class="hero-box">
-    <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
+    <h1 style="margin-bottom:0.3rem; font-family: 'Great Vibes', cursive;">
+        Sowing and Watering
+    </h1>
+
     <p style="margin-top:0; color:#6b5c4d;">
         Daily Faithfulness. Daily Discipline. Daily Stewardship.
     </p>
