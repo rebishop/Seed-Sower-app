@@ -3,7 +3,7 @@ import pandas as pd
 from supabase import create_client
 
 # ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Seed Sower Tracker", layout="wide")
+st.set_page_config(page_title="Sowing and Watering", layout="wide")
 
 # ---------- STYLING ----------
 st.markdown("""
