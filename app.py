@@ -22,12 +22,12 @@ st.markdown("""
     position: fixed;
     top: 85%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0);
+    transform: translate(-50%, -50%) rotate(-8deg);
     font-size: 35px;
     color: rgba(255, 255, 255);
-    text-align: left;
+    text-align: center;
     width: 90%;
-    z-index: 13;
+    z-index: 0;
     pointer-events: none;
     font-family: 'Great Vibes', cursive;
 }
@@ -106,7 +106,6 @@ input::placeholder {
     border-radius: 10px;
     font-weight: 600;
     border: none;
-    min-height: 48px;
 }
 
 .stButton button:hover {
@@ -135,24 +134,10 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ---------- TEAM ----------
-TEAM = [
-    "Alston", "Bishop", "Blake", "Chandler", "Chris",
-    "Dekota", "Eric", "Gage", "Jack", "Jaron",
-    "Kobie", "Levi", "Madeline", "Maryia", "Matthew",
-    "Nathan", "Patten", "Ryan", "Scott", "Shaun",
-    "Ty", "W. Joel"
-]
-
-if "selected_user" not in st.session_state:
-    st.session_state.selected_user = ""
-
 # ---------- HEADER ----------
 st.markdown("""
 <div class="hero-box">
-    <h1 style="margin-bottom:0.3rem; font-family: 'Great Vibes', cursive;">
-        Sowing and Watering
-    </h1>
+    <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
     <p style="margin-top:0; color:#6b5c4d;">
         Daily Faithfulness. Daily Discipline. Daily Stewardship.
     </p>
@@ -161,24 +146,8 @@ st.markdown("""
 
 # ---------- INPUT SECTION ----------
 st.markdown("### Daily Entry")
-st.markdown("#### Select Your Name")
 
-grid_cols = st.columns(4)
-
-for i, name in enumerate(TEAM):
-    with grid_cols[i % 4]:
-        is_selected = st.session_state.selected_user == name
-        button_label = f"✓ {name}" if is_selected else name
-        if st.button(button_label, key=f"user_{name}", use_container_width=True):
-            st.session_state.selected_user = name
-
-user_name = st.session_state.selected_user
-
-if user_name:
-    st.success(f"Selected: {user_name}")
-else:
-    st.info("Please select your name.")
-
+user_name = st.text_input("Your Name")
 entry_date = st.date_input("Date")
 
 col1, col2, col3 = st.columns(3)
@@ -196,21 +165,18 @@ with col3:
 
 # ---------- SAVE ----------
 if st.button("Save Daily Entry"):
-    if not user_name:
-        st.error("Please select your name before saving.")
-    else:
-        payload = {
-            "user_name": user_name,
-            "entry_date": str(entry_date),
-            "seeds_sown": int(seeds_sown),
-            "meetings_set": int(meetings_set),
-            "meetings_ran": int(meetings_ran),
-            "net_new_aum": float(net_new_aum),
-            "Time_In_Word_Minutes": int(Time_In_Word_Minutes),
-        }
+    payload = {
+        "user_name": user_name,
+        "entry_date": str(entry_date),
+        "seeds_sown": int(seeds_sown),
+        "meetings_set": int(meetings_set),
+        "meetings_ran": int(meetings_ran),
+        "net_new_aum": float(net_new_aum),
+        "Time_In_Word_Minutes": int(Time_In_Word_Minutes),
+    }
 
-        supabase.table("daily_metrics").upsert(payload).execute()
-        st.success("Entry saved.")
+    supabase.table("daily_metrics").upsert(payload).execute()
+    st.success("Entry saved.")
 
 st.divider()
 
