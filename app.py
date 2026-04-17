@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 from supabase import create_client
-from datetime import date
 
 # ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Sowing & Watering", layout="wide")
+st.set_page_config(page_title="Seed Sower Tracker", layout="wide")
 
 # ---------- STYLING ----------
 st.markdown("""
@@ -20,11 +19,11 @@ st.markdown("""
 .stApp::before {
     content: "“I have planted, Apollos watered; but God gave the increase.”";
     position: fixed;
-    top: 97%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-    font-size: 20px;
-    color: rgba(255, 255, 255);
+    transform: translate(-50%, -50%) rotate(-12deg);
+    font-size: 60px;
+    color: rgba(120, 100, 80, 0.08);
     text-align: center;
     width: 90%;
     z-index: 0;
@@ -56,19 +55,53 @@ h1, h2, h3 {
     box-shadow: 0 4px 20px rgba(60,40,20,0.06);
 }
 
-/* Inputs */
+/* INPUT BOXES */
 .stTextInput input,
 .stDateInput input,
 .stNumberInput input {
-    background-color: #fcfaf6;
-    border: 1px solid #cdbfae;
-    border-radius: 10px;
+    background-color: #fcfaf6 !important;
+    border: 1px solid #cdbfae !important;
+    border-radius: 10px !important;
+    color: rgb(30, 30, 30) !important;
+    font-weight: 600 !important;
+}
+
+/* Extra fallback for number/date/text values */
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    color: rgb(30, 30, 30) !important;
+    -webkit-text-fill-color: rgb(30, 30, 30) !important;
+}
+
+/* Focus styling */
+.stTextInput input:focus,
+.stDateInput input:focus,
+.stNumberInput input:focus {
+    border: 1px solid #7f8c6b !important;
+    box-shadow: 0 0 0 2px rgba(127, 140, 107, 0.2) !important;
+    color: rgb(30, 30, 30) !important;
+}
+
+/* LABELS */
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] label,
+label {
+    color: rgb(30, 30, 30) !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+}
+
+/* Placeholder text */
+input::placeholder {
+    color: rgb(120, 110, 95) !important;
+    opacity: 1 !important;
 }
 
 /* Buttons */
 .stButton button {
     background-color: #7f8c6b;
-    color: White;
+    color: white;
     border-radius: 10px;
     font-weight: 600;
     border: none;
@@ -76,6 +109,7 @@ h1, h2, h3 {
 
 .stButton button:hover {
     background-color: #6e7b5c;
+    color: white;
 }
 
 /* Tables */
@@ -102,7 +136,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ---------- HEADER ----------
 st.markdown("""
 <div class="hero-box">
-    <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
+    <h1 style="margin-bottom:0.3rem;">Seed Sower Tracker</h1>
     <p style="margin-top:0; color:#6b5c4d;">
         Daily faithfulness. Daily discipline. Daily stewardship.
     </p>
@@ -165,7 +199,6 @@ if user_name:
         st.markdown("### Recent Entries")
         st.dataframe(df.sort_values("entry_date", ascending=False), use_container_width=True)
 
-        # Totals
         total_seeds = int(df["seeds_sown"].sum())
         total_set = int(df["meetings_set"].sum())
         total_ran = int(df["meetings_ran"].sum())
@@ -187,9 +220,17 @@ if user_name:
         r1, r2 = st.columns(2)
 
         with r1:
-            report_start = st.date_input("Start Date", value=df["entry_date"].min().date())
+            report_start = st.date_input(
+                "Start Date",
+                value=df["entry_date"].min().date(),
+                key="report_start"
+            )
         with r2:
-            report_end = st.date_input("End Date", value=df["entry_date"].max().date())
+            report_end = st.date_input(
+                "End Date",
+                value=df["entry_date"].max().date(),
+                key="report_end"
+            )
 
         filtered = df[
             (df["entry_date"].dt.date >= report_start) &
@@ -226,10 +267,13 @@ if user_name:
             st.dataframe(summary_df, use_container_width=True)
 
             csv = filtered.to_csv(index=False).encode("utf-8")
-            st.download_button("Download Detailed CSV", csv, "report.csv", "text/csv")
-
+            st.download_button(
+                "Download Detailed CSV",
+                csv,
+                "report.csv",
+                "text/csv"
+            )
         else:
             st.info("No data in selected range.")
-
     else:
         st.info("No entries yet.")
