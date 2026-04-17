@@ -19,7 +19,7 @@ st.markdown("""
 .stApp::before {
     content: "“I have planted, Apollos watered; but God gave the increase.”";
     position: fixed;
-    top: 50%;
+    top: 95%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-12deg);
     font-size: 60px;
@@ -136,7 +136,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ---------- HEADER ----------
 st.markdown("""
 <div class="hero-box">
-    <h1 style="margin-bottom:0.3rem;">Seed Sower Tracker</h1>
+    <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
     <p style="margin-top:0; color:#6b5c4d;">
         Daily faithfulness. Daily discipline. Daily stewardship.
     </p>
