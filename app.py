@@ -1,7 +1,10 @@
 
 import streamlit as st
 import pandas as pd
-from supabase import create_client
+from supabase import create_clientsupabase.table("daily_metrics").upsert(
+    payload,
+    on_conflict="user_name,entry_date"
+).execute()
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(page_title="Sowing and Watering", layout="wide")
@@ -165,18 +168,27 @@ with col3:
 
 # ---------- SAVE ----------
 if st.button("Save Daily Entry"):
-    payload = {
-        "user_name": user_name,
-        "entry_date": str(entry_date),
-        "seeds_sown": int(seeds_sown),
-        "meetings_set": int(meetings_set),
-        "meetings_ran": int(meetings_ran),
-        "net_new_aum": float(net_new_aum),
-        "Time_In_Word_Minutes": int(Time_In_Word_Minutes),
-    }
+    if not user_name:
+        st.error("Please select your name before saving.")
+    else:
+        payload = {
+            "user_name": user_name,
+            "entry_date": str(entry_date),
+            "seeds_sown": int(seeds_sown),
+            "meetings_set": int(meetings_set),
+            "meetings_ran": int(meetings_ran),
+            "net_new_aum": float(net_new_aum),
+            "Time_In_Word_Minutes": int(Time_In_Word_Minutes),
+        }
 
-    supabase.table("daily_metrics").upsert(payload).execute()
-    st.success("Entry saved.")
+        try:
+            response = supabase.table("daily_metrics").upsert(
+                payload,
+                on_conflict="user_name,entry_date"
+            ).execute()
+            st.success("Entry saved.")
+        except Exception as e:
+            st.error(f"Save failed: {e}")
 
 st.divider()
 
