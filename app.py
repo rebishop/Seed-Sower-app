@@ -17,7 +17,7 @@ st.markdown("""
 .stApp::before {
     content: "“I have planted, Apollos watered; but God gave the increase.”";
     position: fixed;
-    top: 50%;
+    top: 94%;
     left: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-12deg);
