@@ -28,7 +28,7 @@ st.markdown("""
     width: 90%;
     z-index: 0;
     pointer-events: none;
-    font-family: Georgia, serif;
+    font-family: 'Great Vibes', cursive;
 }
 
 /* Keep content above background */
