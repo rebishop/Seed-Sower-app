@@ -22,7 +22,7 @@ st.markdown("""
     top: 85%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-8deg);
-    font-size: 20px;
+    font-size: 35px;
     color: rgba(255, 255, 255);
     text-align: center;
     width: 90%;
