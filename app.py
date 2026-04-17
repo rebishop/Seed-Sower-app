@@ -146,7 +146,7 @@ st.markdown("""
 # ---------- INPUT SECTION ----------
 st.markdown("### Daily Entry")
 
-user_name = st.text_input("Your name")
+user_name = st.text_input("Your Name")
 entry_date = st.date_input("Date")
 
 col1, col2, col3 = st.columns(3)
@@ -160,7 +160,7 @@ with col2:
     net_new_aum = st.number_input("Net New AUM ($)", min_value=0.0, step=1000.0)
 
 with col3:
-    Time_In_Word_Minutes = st.number_input("Time in the Word (minutes)", min_value=0, step=1)
+    Time_In_Word_Minutes = st.number_input("Time In The Word (minutes)", min_value=0, step=1)
 
 # ---------- SAVE ----------
 if st.button("Save Daily Entry"):
