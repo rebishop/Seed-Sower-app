@@ -4,7 +4,7 @@ import pandas as pd
 from supabase import create_client
 
 # ---------- PAGE CONFIG ----------
-st.set_page_config(page_title="Sowing and Watering", layout="wide")
+st.set_page_config(page_title="Soowing and Watering", layout="wide")
 
 # ---------- STYLING ----------
 st.markdown("""
