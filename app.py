@@ -138,7 +138,7 @@ st.markdown("""
 <div class="hero-box">
     <h1 style="margin-bottom:0.3rem;">Sowing and Watering</h1>
     <p style="margin-top:0; color:#6b5c4d;">
-        Daily faithfulness. Daily discipline. Daily stewardship.
+        Daily Faithfulness. Daily Discipline. Daily Stewardship.
     </p>
 </div>
 """, unsafe_allow_html=True)
