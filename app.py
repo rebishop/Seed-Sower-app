@@ -27,7 +27,7 @@ st.markdown("""
     color: rgba(255, 255, 255);
     text-align: left;
     width: 90%;
-    z-index: 0;
+    z-index: 13;
     pointer-events: none;
     font-family: 'Great Vibes', cursive;
 }
